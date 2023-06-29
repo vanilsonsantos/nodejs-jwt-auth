@@ -15,6 +15,20 @@ const register = async (data) => {
   }
 };
 
+const login = async (data) => {
+  if (data.email == 'internal_error@example.com') throw new Error('Internal error');
+  return {
+    first_name: "Vanilson",
+    last_name: "Santos",
+    email: "vanilssonw@example.com",
+    password: "password",
+    _id: "649cb0180e8537a384020260",
+    __v: 0,
+    token: "token"
+  }
+}
+
 module.exports = {
-  register
+  register,
+  login
 }
