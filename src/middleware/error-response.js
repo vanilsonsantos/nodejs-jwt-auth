@@ -1,4 +1,4 @@
-const ApiError = require('./apiError');
+const ApiError = require('./api-error');
 
 const errorResponse = (error, request, response, next) => {
   response.header('Content-Type', 'application/json');
@@ -9,6 +9,5 @@ const errorResponse = (error, request, response, next) => {
   }
 };
 
-module.exports = {
-  errorResponse
-}
+module.exports = errorResponse
+

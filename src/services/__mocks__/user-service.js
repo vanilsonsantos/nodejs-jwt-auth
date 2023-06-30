@@ -1,5 +1,5 @@
 
-const ApiError = require('../../middleware/apiError');
+const ApiError = require('../../middleware/api-error');
 
 const register = async (data) => {
   if (data.first_name == 'internal_error') throw new Error('Internal error');

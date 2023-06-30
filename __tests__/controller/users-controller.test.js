@@ -1,4 +1,4 @@
-const request = require('supertest');
+const { authenticatedRequest, request } = require('./agent'); 
 
 jest.mock('../../src/services/user-service');
 
@@ -9,8 +9,29 @@ beforeEach(() => {
   jest.restoreAllMocks();
 });
 
+test('Should raise INVALID token error', (done) => {
+  const jwt = require('jsonwebtoken');
+  jwt.verify = () => { throw new Error('JWT verification error') };
+
+  authenticatedRequest
+    .post('/users/login')
+    .send({ email: "user@example.com", password: "password" })
+    .expect('Content-Type', /json/)
+    .expect({ message: 'Invalid Token.' })
+    .expect(401, done);
+});
+
+test('Should raise REQUIRED token error', (done) => {
+  request
+    .post('/users/login')
+    .send({ email: "user@example.com", password: "password" })
+    .expect('Content-Type', /json/)
+    .expect({ message: 'A token is required for authentication.' })
+    .expect(403, done);
+});
+
 test('Should server raise apir error', (done) => {
-  request(require('../../src/app'))
+  authenticatedRequest
     .post('/users/register')
     .send({ first_name: 'api_error', last_name: "Santos", email: "vanilsson@example.com", password: "password" })
     .expect('Content-Type', /json/)
@@ -19,7 +40,7 @@ test('Should server raise apir error', (done) => {
 });
 
 test('Should register user raise internal server error', (done) => {
-  request(require('../../src/app'))
+  authenticatedRequest
     .post('/users/register')
     .send({ first_name: 'internal_error', last_name: "Santos", email: "vanilsson@example.com", password: "password" })
     .expect('Content-Type', /json/)
@@ -27,8 +48,8 @@ test('Should register user raise internal server error', (done) => {
     .expect(500, done);
 });
 
-test('Should register user, raise BAD REQUEST 422 if required parameters are missing', (done) => {
-  request(require('../../src/app'))
+test('Should register user, raise BAD authenticatedRequest 422 if required parameters are missing', (done) => {
+  authenticatedRequest
     .post('/users/register')
     .send({ last_name: "Santos", email: "vanilsson@example.com", password: "password" })
     .expect('Content-Type', /json/)
@@ -37,7 +58,7 @@ test('Should register user, raise BAD REQUEST 422 if required parameters are mis
 });
   
 test('Should register user', (done) => {
-  request(require('../../src/app'))
+  authenticatedRequest
     .post('/users/register')
     .send({ first_name: 'Vanilson', last_name: "Santos", email: "vanilsson@example.com", password: "password" })
     .expect('Content-Type', /json/)
@@ -53,8 +74,8 @@ test('Should register user', (done) => {
     .expect(200, done);
 });
 
-test('Should login, raise BAD REQUEST 422 if required parameters are missing', (done) => {
-  request(require('../../src/app'))
+test('Should login, raise BAD authenticatedRequest 422 if required parameters are missing', (done) => {
+  authenticatedRequest
     .post('/users/login')
     .send({ email: "vanilsson@example.com" })
     .expect('Content-Type', /json/)
@@ -63,7 +84,7 @@ test('Should login, raise BAD REQUEST 422 if required parameters are missing', (
 });
 
 test('Should login', (done) => {
-  request(require('../../src/app'))
+  authenticatedRequest
     .post('/users/login')
     .send({ email: "vanilsson@example.com", password: "password" })
     .expect('Content-Type', /json/)
@@ -80,7 +101,7 @@ test('Should login', (done) => {
 });
 
 test('Should login raise internal server error', (done) => {
-  request(require('../../src/app'))
+  authenticatedRequest
     .post('/users/login')
     .send({ email: "internal_error@example.com", password: "password" })
     .expect('Content-Type', /json/)
