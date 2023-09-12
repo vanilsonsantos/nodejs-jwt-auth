@@ -1,6 +1,17 @@
 version: '3.1'
 
 services:
+
+  splunk:
+    image: splunk/splunk:latest
+    volumes:
+     - ./:/data
+    ports:
+     - 8000:8000
+    environment:
+     - SPLUNK_PASSWORD=Van120388#
+     - SPLUNK_HEC_TOKEN=bunnytoken
+     - SPLUNK_START_ARGS=--accept-license
  
   jwt-auth:
     image: node:18.13-alpine3.17
