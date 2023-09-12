@@ -18,7 +18,16 @@ const login = async (req, res, next) => {
   }
 };
 
+const healthCheck = async (req, res, next) => {
+  try {
+    res.json({ status: "Running" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
+  healthCheck,
   register,
   login
 };
