@@ -4,6 +4,7 @@
 #   __ECR_REPOSITORY_NAME__
 #   __ECS_CONTAINER_NAME__
 
+
 version: 0.2
 phases:
   install:
